@@ -1,8 +1,6 @@
 import express, {Request, Response} from 'express'
-export const app = express()
 import bodyParser from 'body-parser'
-
-const port = process.env.PORT || 3000
+import { isJSDocReturnTag } from 'typescript'
 
 export const HTTP_STATUSES = {
   OK_200: 200,
@@ -13,6 +11,9 @@ export const HTTP_STATUSES = {
   NOT_FOUND_404: 404
 }
 
+export const app = express()
+const port = process.env.PORT || 3000
+
 const parserMiddeleware = bodyParser({})
 app.use(parserMiddeleware)
 
@@ -20,14 +21,14 @@ app.use(parserMiddeleware)
 
 
 type videoType = {
-    id: number,
-    title: string,
-    author: string,
-    canBeDownloaded: boolean,
-    minAgeRestriction: number | null,
-    createdAt: string,
-    publicationDate: string,
-    availableResolutions: Array<string>
+    "id": number,
+    "title": string,
+    "author": string,
+    "canBeDownloaded": boolean,
+    "minAgeRestriction": any,
+    "createdAt": string,
+    "publicationDate": string,
+    "availableResolutions": Array<string>
 }
 type videosType = Array<videoType>
 type errorObjType = {message: string, field: string}
@@ -119,17 +120,18 @@ app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
       errors(req.body)
       if(arrErrors.length > 0){
         res.status(HTTP_STATUSES.BAD_REQUEST_400).send(allErrors)
+        arrErrors.length = 0
         return;
       } else {
     const newVideo: videoType = {
       'id': +(new Date()),
       'title': req.body.title,
       'author': req.body.author,
-      'canBeDownloaded': true,
-     'minAgeRestriction': null,
+      'canBeDownloaded': req.body.canBeDownloaded,
+     'minAgeRestriction': req.body.minAgeRestriction,
       'createdAt': createdAt,
       'publicationDate': publicationDate,
-      'availableResolutions': req.body.allResolutions
+      'availableResolutions': req.body.availableResolutions
     }   
     videos.push(newVideo)
     res.status(HTTP_STATUSES.CREATED_201)
@@ -166,10 +168,12 @@ app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
       key.createdAt = req.body.createdAt ?? key.createdAt
       key.publicationDate = req.body.publicationDate ?? key.publicationDate
       key.availableResolutions = req.body.availableResolutions ?? key.availableResolutions
+      res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+      return;
     }
   }
 } 
-res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
+res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 
 
