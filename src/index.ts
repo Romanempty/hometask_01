@@ -10,7 +10,7 @@ export const HTTP_STATUSES = {
   BAD_REQUEST_400: 400,
   NOT_FOUND_404: 404
 }
-const app = express()
+export const app = express()
 const port = process.env.PORT || 3000
 
 const parserMiddeleware = bodyParser({})
@@ -101,11 +101,11 @@ const errors = (body: any) => {
   }
 }
 
-app.get('/hometask_01/api/videos', (req: Request, res: Response) => { 
+app.get('/videos', (req: Request, res: Response) => { 
   res.status(HTTP_STATUSES.OK_200).send(videos)
   })
   
-app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
+app.get('/videos/:id', (req:Request, res: Response) => {
   for(let key of videos) {
     if (key.id === +req.params.id){
       res.status(HTTP_STATUSES.OK_200).send(key);
@@ -115,7 +115,7 @@ app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
     res.send(HTTP_STATUSES.NOT_FOUND_404) 
   })
   
-  app.post('/hometask_01/api/videos', (req: Request, res: Response)=> {
+  app.post('/videos', (req: Request, res: Response)=> {
       errors(req.body)
       if(arrErrors.length > 0){
         res.status(HTTP_STATUSES.BAD_REQUEST_400).send(allErrors)
@@ -138,7 +138,7 @@ app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
   }
   })
   
-  app.delete('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
+  app.delete('/videos/:id', (req: Request, res: Response) => {
       if(videos.length > 0) {
           for(let key of videos) {
               if (key.id === +req.params.id){
@@ -151,7 +151,7 @@ app.get('/hometask_01/api/videos/:id', (req:Request, res: Response) => {
       res.send(HTTP_STATUSES.NOT_FOUND_404)
   })
   
-  app.put('/hometask_01/api/videos/:id', (req: Request, res: Response) => {
+  app.put('/videos/:id', (req: Request, res: Response) => {
     for(let key of videos) {
       if (key.id === +req.params.id){
     errors(req.body)
@@ -176,7 +176,7 @@ res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 })
 
 
-  app.delete('/ht_01/api/testing/all-data', (req: Request, res: Response) => {
+  app.delete('/testing/all-data', (req: Request, res: Response) => {
       videos = []
       res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     })
